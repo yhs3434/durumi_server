@@ -4,12 +4,6 @@ const Account = require('../models/account');
 const router = new Router();
 
 router.get('/', async (ctx) => {
-
-
-    ctx.body = {
-        id: 'test',
-        text: 'hello'
-    }
 })
 
 router.post('/join', async (ctx) => {
@@ -25,7 +19,7 @@ router.post('/join', async (ctx) => {
 
     try {
         await account.save();
-        ctx.body = account;
+        ctx.response.body = account;
     } catch(e) {
         ctx.throw(e, 500);
     }
@@ -38,7 +32,7 @@ router.post('/login', async (ctx) => {
     try{
         const result = await Account.find().where('email').equals(email).where('password').equals(password);
         const result_js = JSON.parse(JSON.stringify(result));
-        console.log('login : ', result_js);
+        console.log('login : ', result[0].profile);
 
         if(result.length===0) {
         }

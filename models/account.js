@@ -6,7 +6,7 @@ const Account = new Schema({
         username: String,
         thumbnail: {
             type: String,
-            default: '/path'
+            default: '/images/accountDefault.jpg'
         }
     },
     email: {

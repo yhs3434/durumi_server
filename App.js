@@ -26,12 +26,14 @@ app.use(cors());
 app.use(bodyParser());
 
 const account = require('./route/account');
+const team = require('./route/team');
 
 /* Route's modules are contained in here*/
 // const api = require('./api');
 // router.use('/api', api.routes());
 
 router.use('/account', account.routes());
+router.use('/team', team.routes());
 
 /* */
 

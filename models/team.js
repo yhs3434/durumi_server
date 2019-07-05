@@ -10,11 +10,16 @@ const Team = new Schema({
             type: String
         },
         thumbnail: {
-            type: String
+            type: String,
+            default: "/images/teamDefault.jpg"
         }
     },
     member: [],
-    hash: [String],
+    hashTag: [String],
+    determine: {
+        type: Number,
+        default: 0
+    },
     createdAt: {
         type: Date,
         default: Date.now
