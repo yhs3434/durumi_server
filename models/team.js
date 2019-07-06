@@ -14,11 +14,15 @@ const Team = new Schema({
             default: "/images/teamDefault.jpg"
         }
     },
-    member: [],
+    member: [String],
     hashTag: [String],
     determine: {
         type: Number,
         default: 0
+    },
+    category: {
+        type: String,
+        default: '미정'
     },
     createdAt: {
         type: Date,

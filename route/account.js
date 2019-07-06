@@ -1,7 +1,14 @@
+const crypto = require('crypto');
+
 const Router = require('koa-router');
 const Account = require('../models/account');
 
 const router = new Router();
+
+function toHash(password) {
+    const hashPassword = crypto.createHash('sha512').update(password).digest('base64');
+    return hashPassword;
+}
 
 router.get('/', async (ctx) => {
 })
@@ -9,12 +16,14 @@ router.get('/', async (ctx) => {
 router.post('/join', async (ctx) => {
     const req = ctx.request.body;
 
+    const hashPassword = toHash(req.password);
+
     const account = new Account({
         profile: {
             username: req.username
         },
         email: req.email,
-        password: req.password
+        password: hashPassword
     });
 
     try {
@@ -29,9 +38,11 @@ router.post('/login', async (ctx) => {
     const req = ctx.request.body;
     const {email, password} = req;
 
+    const hashPassword = toHash(password);
+
     try{
-        const result = await Account.find().where('email').equals(email).where('password').equals(password);
-        const result_js = JSON.parse(JSON.stringify(result));
+        const result = await Account.find().where('email').equals(email).where('password').equals(hashPassword);
+
         console.log('login : ', result[0].profile);
 
         if(result.length===0) {
