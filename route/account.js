@@ -43,7 +43,7 @@ router.post('/login', async (ctx) => {
     try{
         const result = await Account.find().where('email').equals(email).where('password').equals(hashPassword);
 
-        console.log('login : ', result[0].profile);
+        console.log('login : ', result[0].profile.username);
 
         if(result.length===0) {
         }
