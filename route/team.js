@@ -4,6 +4,8 @@ const Account = require('../models/account');
 
 const router = new Router();
 
+const fs = require('mz/fs');
+
 router.get('/', (ctx) => {
     ctx.response.body = {'status': 200};
 })
@@ -27,7 +29,15 @@ router.post('/create', async (ctx) => {
     const createdTeam = new Team(newTeam);
 
     try {
-        await createdTeam.save();
+        const result = await createdTeam.save();
+        
+        const newTeamId = createdTeam._id;
+        const path = `./public/images/team/${newTeamId}`;
+        fs.mkdir(path, {}, (err) => {
+            if(err) {
+                console.log('team -> create', err);
+            }
+        })
         ctx.response.body = createdTeam;
     } catch(e) {
         ctx.response.body = e;
@@ -75,8 +85,35 @@ router.post('/join', async (ctx) => {
     } catch(e) {
         ctx.response.body = e;
     }
+ 
+})
 
-    
+router.get('/album/:teamId', async (ctx) => {
+    const teamId = ctx.params.teamId;
+    const dirPath = `./public/images/team/${teamId}`;
+    let dirContents = [];
+    try {
+        dirContents = await fs.readdir(dirPath);
+    } catch(e) {
+        console.log('e', e);
+    }
+    ctx.response.body = dirContents;
+})
+
+router.post('/album/upload', async (ctx) => {
+    // const {userObject, teamSelected, file}= ctx.request.body;
+    const files = ctx.request.files;
+    const {teamId, userId} = ctx.request.body;
+
+    const writePath = `./public/images/team/${teamId}/`;
+    const fileName = `${userId}_${files.file.name}`;
+
+    const readStream = fs.createReadStream(files.file.path);
+    const writeStream = fs.createWriteStream(writePath+fileName);
+
+    readStream.pipe(writeStream);
+
+    ctx.response.body = 'success';
 })
 
 module.exports = router;

@@ -3,8 +3,9 @@ require('dotenv').config();
 const Koa = require('koa');
 const Router = require('koa-router');
 const mongoose = require('mongoose');
-const bodyParser = require('koa-bodyparser');
+const bodyParser = require('koa-body');
 const cors = require('koa2-cors');
+const publicDir = require('koa-static');
 
 const app = new Koa();
 const router = new Router();
@@ -23,7 +24,12 @@ mongoose.connect(process.env.MONGO_URI, {
 });
 
 app.use(cors());
-app.use(bodyParser());
+app.use(bodyParser({
+    multipart: true,
+    formLimit: (5 * 1024 * 1024)
+}));
+app.use(publicDir('./public'));
+app.use(publicDir('./public/images'));
 
 const account = require('./route/account');
 const team = require('./route/team');
