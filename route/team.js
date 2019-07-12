@@ -1,6 +1,8 @@
 const Router = require('koa-router');
+
 const Team = require('../models/team');
 const Account = require('../models/account');
+const Chat = require('../models/chat');
 
 const router = new Router();
 
@@ -38,6 +40,7 @@ router.post('/create', async (ctx) => {
                 console.log('team -> create', err);
             }
         })
+        await new Chat({teamId: newTeamId}).save();
         ctx.response.body = createdTeam;
     } catch(e) {
         ctx.response.body = e;
@@ -71,10 +74,8 @@ router.post('/join', async (ctx) => {
     try{
         const query_team = {_id: teamId};
         let team = await Team.findOne(query_team);
-        console.log('team', team);
         const query_user = {_id: userId};
         let user = await Account.findOne(query_user);
-        console.log('user', user);
         if(user!==null) {
             team.member=[...team.member, user._id];
             await team.save();
@@ -114,6 +115,34 @@ router.post('/album/upload', async (ctx) => {
     readStream.pipe(writeStream);
 
     ctx.response.body = 'success';
+})
+
+router.get('/chat/:teamId', async (ctx) => {
+    const teamId = ctx.params.teamId;
+
+    let chats = await Chat.findOne({teamId: teamId});
+    console.log(chats);
+    ctx.response.body = chats;
+})
+
+router.post('/chat/:teamId', async (ctx) => {
+    const teamId = ctx.params.teamId;
+    const { userId, message } = ctx.request.body;
+
+    let messageData = {
+        userId: userId,
+        message: message
+    }
+
+    let result = undefined;
+    try {
+        let chatData = await Chat.findOne({teamId: teamId});
+        chatData.message.push(messageData);
+        result = await chatData.save();
+    } catch(e) {
+        console.log('e', e);
+    }
+    ctx.response.body = result;
 })
 
 module.exports = router;
