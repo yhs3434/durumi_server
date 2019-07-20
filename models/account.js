@@ -30,6 +30,12 @@ const Account = new Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    job: {
+        type: String
+    },
+    major: {
+        type: String
     }
 })
 

@@ -35,12 +35,19 @@ router.post('/create', async (ctx) => {
         
         const newTeamId = createdTeam._id;
         const path = `./public/images/team/${newTeamId}`;
-        fs.mkdir(path, {}, (err) => {
+        await fs.mkdir(path, {}, (err) => {
             if(err) {
                 console.log('team -> create', err);
             }
         })
         await new Chat({teamId: newTeamId}).save();
+        
+        const readPath = `./public/images/team/default/thumbnail.png`;
+        const writePath = `./public/images/team/${newTeamId}/thumbnail.png`;
+        const readStream = fs.createReadStream(readPath);
+        const writeStream = fs.createWriteStream(writePath);
+
+        await readStream.pipe(writeStream);
         ctx.response.body = createdTeam;
     } catch(e) {
         ctx.response.body = e;
@@ -102,7 +109,6 @@ router.get('/album/:teamId', async (ctx) => {
 })
 
 router.post('/album/upload', async (ctx) => {
-    // const {userObject, teamSelected, file}= ctx.request.body;
     const files = ctx.request.files;
     const {teamId, userId} = ctx.request.body;
 
@@ -143,6 +149,32 @@ router.post('/chat/:teamId', async (ctx) => {
         console.log('e', e);
     }
     ctx.response.body = result;
+})
+
+router.get('/member/:id', async (ctx) => {
+    try {
+        const team = await Team.findOne({_id: ctx.params.id});
+        const memberIdList = team.member;
+        let memberList = [];
+        let promise = [];
+        memberIdList.map((item, idx) => {
+            let memberPromise = new Promise((resolve, reject) => {
+                Account.findOne({_id: item}).then((result) => {
+                    memberList.push(result);
+                    resolve('done');
+                })
+            })
+            promise.push(memberPromise);
+        })
+        
+        await Promise.all(promise).then((result) =>{
+            console.log(result);
+        })
+
+        ctx.response.body = memberList;
+    } catch (e) {
+        ctx.response.body = [];
+    }
 })
 
 module.exports = router;
