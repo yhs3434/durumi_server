@@ -111,4 +111,47 @@ router.delete('/thumbnail/:userId', async (ctx) => {
     }
 })
 
+router.put('/edit/profile', async (ctx) => {
+    const reqBody = ctx.request.body;
+
+    try {
+        let account = await Account.findOne({_id: reqBody._id});
+        
+        if(Boolean(reqBody.username)) {
+            account.username = reqBody.username;
+        }
+        if(Boolean(reqBody.email)) {
+            account.email = reqBody.email;
+        }
+        if(Boolean(reqBody.birth)) {
+            account.birth = reqBody.birth;
+        }
+        if(Boolean(reqBody.gender)) {
+            account.gender = reqBody.gender;
+        }
+        if(Boolean(reqBody.job)) {
+            account.job = reqBody.job;
+        }
+        if(Boolean(reqBody.office)) {
+            account.office = reqBody.office;
+        }
+        if(Boolean(reqBody.school)) {
+            account.school = reqBody.school;
+        }
+        if(Boolean(reqBody.major)) {
+            account.major = reqBody.major;
+        }
+        if(Boolean(reqBody.interest)) {
+            account.interest = reqBody.interest;
+        }
+
+        const result = await account.save();
+
+        ctx.response.body = result;
+    } catch (e) {
+        ctx.response.body = e;
+    }
+})
+
+
 module.exports = router;

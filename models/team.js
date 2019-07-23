@@ -1,6 +1,24 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+const Board = new Schema({
+    userId: String,
+    title: String,
+    subheader: String,
+    content: String,
+    like: {
+        count: {
+            type: Number,
+            default: 0
+        },
+        liked: [String]
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+})
+
 const Team = new Schema({
     profile: {
         name: {
@@ -16,6 +34,7 @@ const Team = new Schema({
     },
     member: [String],
     hashTag: [String],
+    board: [Board],
     determine: {
         type: Number,
         default: 0

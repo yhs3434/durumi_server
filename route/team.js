@@ -177,4 +177,10 @@ router.get('/member/:id', async (ctx) => {
     }
 })
 
+router.post('/board', async (ctx) => {
+    let reqBody = ctx.request.body;
+
+    
+})
+
 module.exports = router;

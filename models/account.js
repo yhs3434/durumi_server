@@ -4,6 +4,12 @@ const { Schema } = mongoose;
 const Account = new Schema({
     profile: {
         username: String,
+        birth: {
+            type: Date
+        },
+        gender: {
+            type: String
+        },
         thumbnail: {
             type: String,
             default: '/images/accountDefault.jpg'
@@ -34,7 +40,16 @@ const Account = new Schema({
     job: {
         type: String
     },
+    office: {
+        type: String
+    },
+    school: {
+        type: String
+    },
     major: {
+        type: String
+    },
+    interest: {
         type: String
     }
 })
