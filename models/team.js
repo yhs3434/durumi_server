@@ -4,7 +4,6 @@ const { Schema } = mongoose;
 const Board = new Schema({
     userId: String,
     title: String,
-    subheader: String,
     content: String,
     like: {
         count: {

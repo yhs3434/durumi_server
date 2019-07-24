@@ -180,7 +180,19 @@ router.get('/member/:id', async (ctx) => {
 router.post('/board', async (ctx) => {
     let reqBody = ctx.request.body;
 
-    
+    const boardData = {
+        userId: reqBody.userId,
+        title: reqBody.title,
+        content: reqBody.content
+    }
+    try {
+        let team = await Team.findOne({_id: reqBody.teamId});
+        team.board.push(boardData);
+        await team.save();
+        ctx.response.body = 'success';
+    } catch (e) {
+        ctx.response.body = e;
+    }
 })
 
 module.exports = router;
