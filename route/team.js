@@ -113,7 +113,7 @@ router.post('/album/upload', async (ctx) => {
     const {teamId, userId} = ctx.request.body;
 
     const writePath = `./public/images/team/${teamId}/`;
-    const fileName = `${userId}_${files.file.name}`;
+    const fileName = `${Date.parse(new Date())}_${userId}_${files.file.name}`;
 
     const readStream = fs.createReadStream(files.file.path);
     const writeStream = fs.createWriteStream(writePath+fileName);
@@ -127,7 +127,7 @@ router.get('/chat/:teamId', async (ctx) => {
     const teamId = ctx.params.teamId;
 
     let chats = await Chat.findOne({teamId: teamId});
-    console.log(chats);
+    
     ctx.response.body = chats;
 })
 
@@ -168,7 +168,7 @@ router.get('/member/:id', async (ctx) => {
         })
         
         await Promise.all(promise).then((result) =>{
-            console.log(result);
+            
         })
 
         ctx.response.body = memberList;
@@ -192,6 +192,16 @@ router.post('/board', async (ctx) => {
         ctx.response.body = 'success';
     } catch (e) {
         ctx.response.body = e;
+    }
+})
+
+router.get('/board/:teamId', async (ctx) => {
+    try {
+        const teamId = ctx.params.teamId;
+        const teamSelected = await Team.findOne({_id: teamId});
+        ctx.response.body = teamSelected.board;
+    } catch (e) {
+        ctx.response.body = [];
     }
 })
 
