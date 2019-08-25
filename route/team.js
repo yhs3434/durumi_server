@@ -205,4 +205,38 @@ router.get('/board/:teamId', async (ctx) => {
     }
 })
 
+router.post('/calendar/:teamId', async (ctx) => {
+    try{
+        const teamId = ctx.params.teamId;
+        const what = ctx.request.body.what;
+        const when = ctx.request.body.when;
+        const where = ctx.request.body.where;
+        const newScheduleDate = ctx.request.body.newScheduleDate;
+
+        const teamSelected = await Team.findOne({_id: teamId});
+        
+        teamSelected.calendar.push({
+            what, when, where, newScheduleDate
+        });
+
+        teamSelected.save();
+
+        ctx.response.body = teamSelected;
+    } catch(e) {
+        ctx.response.body = null;
+    }
+});
+
+router.get('/calendar/:teamId', async (ctx) => {
+    try{
+        const teamId = ctx.params.teamId;
+        const teamSelected = await Team.findOne({_id: teamId});
+
+        const calendar = teamSelected.calendar;
+        ctx.response.body = calendar;
+    } catch(e) {
+        ctx.response.body = [];
+    }
+})
+
 module.exports = router;

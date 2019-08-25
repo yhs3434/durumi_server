@@ -18,6 +18,13 @@ const Board = new Schema({
     }
 })
 
+const Calendar = new Schema({
+    what: String,
+    when: String,
+    where: String,
+    newScheduleDate: String
+})
+
 const Team = new Schema({
     profile: {
         name: {
@@ -34,6 +41,7 @@ const Team = new Schema({
     member: [String],
     hashTag: [String],
     board: [Board],
+    calendar: [Calendar],
     determine: {
         type: Number,
         default: 0
